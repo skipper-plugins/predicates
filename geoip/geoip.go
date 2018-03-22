@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	ot "github.com/opentracing/opentracing-go"
 	maxminddb "github.com/oschwald/maxminddb-golang"
 	snet "github.com/zalando/skipper/net"
 	"github.com/zalando/skipper/predicates"
@@ -72,6 +73,11 @@ type countryRecord struct {
 }
 
 func (p *geoipPredicate) Match(r *http.Request) bool {
+	span := ot.SpanFromContext(r.Context())
+	if span != nil {
+		span.LogKV("GeoIP", "start")
+	}
+
 	var src net.IP
 	if p.fromLast {
 		src = snet.RemoteHostFromLast(r)
@@ -88,5 +94,8 @@ func (p *geoipPredicate) Match(r *http.Request) bool {
 		record.Country.ISOCode = "UNKNOWN"
 	}
 	_, ok := p.countries[record.Country.ISOCode]
+	if span != nil {
+		span.LogKV("GeoIP", record.Country.ISOCode)
+	}
 	return ok
 }

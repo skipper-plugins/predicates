@@ -21,6 +21,7 @@ GeoLite2-Country.tar.gz:
 
 deps: 
 	go get -t github.com/zalando/skipper
+	go get -t github.com/opentracing/opentracing-go
 	# glide update
 	glide install
 
