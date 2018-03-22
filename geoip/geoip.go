@@ -1,3 +1,29 @@
+// The GeoIP predicate plugin for skipper supports checking the
+// remote ip and install a route matching.
+//
+// Examples:
+//
+// 	// Check if the remote IP is listed as Germany:
+// 	example1: GeoIP("DE") -> "https://de.example.org";
+// 	fallback: * -> "https://intl.example.org"
+//
+// 	// multiple ISO codes may be given as parameter:
+// 	example1: GeoIP("DE", "UK", "SE") -> "http://example.org/known"
+// 	// all lookup errors or unknowns get the "UNKNOWN" country
+// 	example2: GeoIP("UNKNOWN") -> "http://example.org/unknown"
+// 	// to get the ip from the X-Forwarded-For header, use
+// 	example3: GeoIP("last_from=true", "de", "se", "fr", "ch") -> "http://example.org"
+// 	// as seen, the country codes may be given in any case
+//
+// Requirements:
+//
+//
+// The plugin must be loaded with the
+//
+// 	-predicate-plugin "geoip,db=/path/to/dbfile.mmdb"
+//
+// option for skipper. The db file must be a geoip2 country or city database from
+// MaxMind, see https://www.maxmind.com/en/geoip2-databases
 package main
 
 import (
